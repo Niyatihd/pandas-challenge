@@ -1,5 +1,3 @@
-# pandas-challenge
-
 
 HEROES OF PYMOLI DATA ANALYSIS
 
@@ -26,19 +24,106 @@ file_one_df = pd.read_json(file_one)
 
 file_one_df_male = file_one_df.loc[file_one_df["Gender"] == "Male"]
 male_unique = len(file_one_df_male["SN"].unique())
+male_price = file_one_df_male["Price"].sum()
 #file_one_df_male.head()
-print("Number of unique male = {}".format(male_unique))
+print("Number of unique male = {} & total price = {}".format(male_unique, male_price))
 
 file_one_df_female = file_one_df.loc[file_one_df["Gender"] == "Female"]
 female_unique = len(file_one_df_female["SN"].unique())
+female_price = file_one_df_female["Price"].sum()
 #file_one_df_female.head()
-print("Number of unique female = {}".format(female_unique))
+print("Number of unique female = {} & total price = {}".format(female_unique, female_price))
 
-#file_one_df.head()
+file_one_df_total = file_one_df["Price"].sum()
+print("Total purchase amount = {}".format(file_one_df_total))
+
+file_one_df.head()
 ```
 
-    Number of unique male = 465
-    Number of unique female = 100
+    Number of unique male = 465 & total price = 1867.6799999999985
+    Number of unique female = 100 & total price = 382.90999999999985
+    Total purchase amount = 2286.3299999999963
+
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Gender</th>
+      <th>Item ID</th>
+      <th>Item Name</th>
+      <th>Price</th>
+      <th>SN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>38</td>
+      <td>Male</td>
+      <td>165</td>
+      <td>Bone Crushing Silver Skewer</td>
+      <td>3.37</td>
+      <td>Aelalis34</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>21</td>
+      <td>Male</td>
+      <td>119</td>
+      <td>Stormbringer, Dark Blade of Ending Misery</td>
+      <td>2.32</td>
+      <td>Eolo46</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>34</td>
+      <td>Male</td>
+      <td>174</td>
+      <td>Primitive Blade</td>
+      <td>2.46</td>
+      <td>Assastnya25</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>21</td>
+      <td>Male</td>
+      <td>92</td>
+      <td>Final Critic</td>
+      <td>1.36</td>
+      <td>Pheusrical25</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>23</td>
+      <td>Male</td>
+      <td>63</td>
+      <td>Stormfury Mace</td>
+      <td>1.27</td>
+      <td>Aela59</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
 
 
 TEST CELL (IGNORE)
@@ -62,8 +147,8 @@ clean_file_one_df = file_one_df.dropna(how="any")
 
 ```python
 total_players = len(file_one_df['SN'].unique())
-total_players = pd.DataFrame([{"Total Players": total_players}])
-total_players
+total_players_df = pd.DataFrame([{"Total Players": total_players}])
+total_players_df
 ```
 
 
@@ -122,8 +207,8 @@ purchasing_analysis_df = purchasing_analysis_df[['Number of Unique Items',
                                                 'Average Price',
                                                 'Number of Purchases',
                                                 'Total Revenue']]
-purchasing_analysis_df["Average Price"] = purchasing_analysis_df["Average Price"].map("{0:,.2f}%".format)
-purchasing_analysis_df["Total Revenue"] = purchasing_analysis_df["Total Revenue"].map("{0:,.2f}%".format)
+purchasing_analysis_df["Average Price"] = purchasing_analysis_df["Average Price"].map("${0:,.2f}".format)
+purchasing_analysis_df["Total Revenue"] = purchasing_analysis_df["Total Revenue"].map("${0:,.2f}".format)
 purchasing_analysis_df
 ```
 
@@ -158,9 +243,9 @@ purchasing_analysis_df
     <tr>
       <th>0</th>
       <td>179</td>
-      <td>2.93%</td>
+      <td>$2.93</td>
       <td>780</td>
-      <td>2,286.33%</td>
+      <td>$2,286.33</td>
     </tr>
   </tbody>
 </table>
@@ -177,7 +262,7 @@ GENDER DEMOGRAPHICS
 demographic_count = file_one_df['Gender'].value_counts()
 demographic_count_df = pd.DataFrame(demographic_count)
 demographic_count_df = demographic_count_df.rename(columns={"Gender":"Total Count"})
-demographic_percent = [((x/total_players["Total Players"][0])*100) for x in demographic_count_df["Total Count"]]
+demographic_percent = [((x/total_purchases)*100) for x in demographic_count_df["Total Count"]]
 
 demographic_count_df["Percentage of Players"] = demographic_percent
 demographic_count_df["Percentage of Players"] = demographic_count_df["Percentage of Players"].map("{0:,.2f}%".format)
@@ -215,17 +300,17 @@ demographic_count_df
   <tbody>
     <tr>
       <th>Male</th>
-      <td>110.47%</td>
+      <td>81.15%</td>
       <td>633</td>
     </tr>
     <tr>
       <th>Female</th>
-      <td>23.73%</td>
+      <td>17.44%</td>
       <td>136</td>
     </tr>
     <tr>
       <th>Other / Non-Disclosed</th>
-      <td>1.92%</td>
+      <td>1.41%</td>
       <td>11</td>
     </tr>
   </tbody>
@@ -353,97 +438,10 @@ age_groups = ['<10', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '>40'
 
 # Add new column to the original DF
 file_one_df["Age Range"] = pd.cut(file_one_df["Age"], bins, labels=age_groups)
-file_one_df.head()
+#file_one_df.head()
 ```
 
     Highest range for Age in data set is 45
-
-
-
-
-
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Age</th>
-      <th>Gender</th>
-      <th>Item ID</th>
-      <th>Item Name</th>
-      <th>Price</th>
-      <th>SN</th>
-      <th>Age Range</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>38</td>
-      <td>Male</td>
-      <td>165</td>
-      <td>Bone Crushing Silver Skewer</td>
-      <td>3.37</td>
-      <td>Aelalis34</td>
-      <td>35-39</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>21</td>
-      <td>Male</td>
-      <td>119</td>
-      <td>Stormbringer, Dark Blade of Ending Misery</td>
-      <td>2.32</td>
-      <td>Eolo46</td>
-      <td>20-24</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>34</td>
-      <td>Male</td>
-      <td>174</td>
-      <td>Primitive Blade</td>
-      <td>2.46</td>
-      <td>Assastnya25</td>
-      <td>30-34</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>21</td>
-      <td>Male</td>
-      <td>92</td>
-      <td>Final Critic</td>
-      <td>1.36</td>
-      <td>Pheusrical25</td>
-      <td>20-24</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>23</td>
-      <td>Male</td>
-      <td>63</td>
-      <td>Stormfury Mace</td>
-      <td>1.27</td>
-      <td>Aela59</td>
-      <td>20-24</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
 
 
 
@@ -627,6 +625,84 @@ top_spender_df.head()
       <td>4</td>
       <td>$2.56</td>
       <td>$10.24</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+num1 = file_one_df.loc[file_one_df["SN"] == "Sondastan54"]
+num1
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Gender</th>
+      <th>Item ID</th>
+      <th>Item Name</th>
+      <th>Price</th>
+      <th>SN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>75</th>
+      <td>31</td>
+      <td>Male</td>
+      <td>31</td>
+      <td>Trickster</td>
+      <td>2.07</td>
+      <td>Sondastan54</td>
+    </tr>
+    <tr>
+      <th>304</th>
+      <td>31</td>
+      <td>Male</td>
+      <td>173</td>
+      <td>Stormfury Longsword</td>
+      <td>4.83</td>
+      <td>Sondastan54</td>
+    </tr>
+    <tr>
+      <th>420</th>
+      <td>31</td>
+      <td>Male</td>
+      <td>170</td>
+      <td>Shadowsteel</td>
+      <td>1.98</td>
+      <td>Sondastan54</td>
+    </tr>
+    <tr>
+      <th>754</th>
+      <td>31</td>
+      <td>Male</td>
+      <td>104</td>
+      <td>Gladiator's Glaive</td>
+      <td>1.36</td>
+      <td>Sondastan54</td>
     </tr>
   </tbody>
 </table>
